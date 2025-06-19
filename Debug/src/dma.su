@@ -1,1 +1,8 @@
-dma.c:4:6:dma1_init	24	static
+core_cm4.h:1467:22:NVIC_EnableIRQ	16	static
+core_cm4.h:1550:22:NVIC_SetPriority	16	static
+dma.c:9:6:int2chr	32	static
+dma.c:19:6:convert_data2str	16	static
+dma.c:27:6:dma1_init_for_adc1	8	static
+dma.c:38:6:dma1_init_for_usart2	8	static
+dma.c:47:6:dma1_ch1_en	4	static
+dma.c:56:6:dma1_ch7_en	4	static

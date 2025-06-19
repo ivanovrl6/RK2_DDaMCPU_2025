@@ -22,6 +22,14 @@ void usart2_init(){
 
 	USART2->CR1 |= USART_CR1_UE|USART_CR1_TE|USART_CR1_RE;
 
+	USART2->CR1 |= USART_CR1_RXNEIE;
+
+	USART2->CR3 |= USART_CR3_DMAT;
+
+	NVIC_SetPriority(USART2_IRQn, 0x03);
+	NVIC_EnableIRQ(USART2_IRQn);
+
+
 }
 /*
  * usart.c

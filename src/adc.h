@@ -17,6 +17,8 @@ void ADVREGEN_OFF();
 void ADVREGEN_ON();
 void adc_init();
 
+void pll_init();
+
 
 
 

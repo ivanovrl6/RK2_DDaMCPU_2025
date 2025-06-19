@@ -14,6 +14,12 @@
 #include "string.h"
 #include "usart.h"
 
-void dma1_init();
+void dma1_init_for_usart2();
+void dma1_init_for_adc1();
+void dma1_ch7_en();
+void dma1_ch1_en();
+void convert_data2str();
+void int2chr(uint16_t number, char* buff);
+
 
 #endif /* DMA_H_ */

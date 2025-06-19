@@ -43,7 +43,8 @@
 #include "stdint.h"
 #include "dma.h"
 
-static float temp;
+volatile uint8_t dma_w = 0;
+int pause = 600000;
 
 void gpioe_init(){
 	RCC->AHBENR |= RCC_AHBENR_GPIOEEN;
@@ -51,24 +52,76 @@ void gpioe_init(){
 	GPIOE->MODER |= GPIO_MODER_MODER13_0;
 }
 
-void ADC_1_2_IRQHandler(void){
-	if(ADC1->ISR & ADC_ISR_EOC){
-		temp = (float)(25 - ADC1->DR) + 25;
+
+void fl2ch(float number, char* buff){
+	int num = (int)(number * 100);
+	for(int i=4;i>-1;i--){
+		if(i==2){
+			buff[i] = '.';
+		}
+		else{
+			int a = num % 10;
+			buff[i] ='0' + a;
+			num = num/10;
+		}
+	}
+	buff[5] = ' ';
+	buff[6] = '\0';
+}
+
+void int2ch(int number, char* buff){
+	int num = number;
+	for(int i = 3; i > -1; i--){
+		int a = num % 10;
+		buff[i] ='0' + a;
+		num = num/10;
+	}
+	buff[4] = ' ';
+}
+void gpioa_init(){
+	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+	GPIOA->MODER |= GPIO_MODER_MODER0;
+}
+int main(void)
+{
+	gpioa_init();
+	usart2_init();
+	adc_init();
+	dma1_init_for_adc1();
+	dma1_init_for_usart2();
+	dma1_ch7_en();
+	dma1_ch1_en();
+
+}
+void ADC1_2_IRQHandler(){
+	if(ADC1->ISR & ADC_ISR_EOS){
+
+	}
+}
+void USART2_IRQHandler() {
+	if (USART2->ISR & USART_ISR_RXNE) {
+	        if(USART2->RDR == 0xEE){
+
+	        }
+	 }
+}
+
+void DMA1_Channel7_IRQHandler(){
+	if(DMA1->ISR & DMA_ISR_TCIF7){
+		DMA1->IFCR |= DMA_IFCR_CTCIF7;
+		delay(pause);
+		dma1_ch7_en();
+
 	}
 }
 
-int main(void)
-{
-¸	char myString[] = "Hello World";
-	uint8_t len = strlen(myString);
-	uint8_t count = 0;
-	usart2_init();
-		while(count<len){
-			if(USART2->ISR & USART_ISR_TXE){
-				USART2->TDR = myString[count++];
-			}
-		}
+void DMA1_Channel1_IRQHandler(){
+	if(DMA1->ISR & DMA_ISR_TCIF1){
+		DMA1->IFCR |= DMA_IFCR_CTCIF1;
+		convert_data2str();
+		dma1_ch1_en();
 
+	}
 }
 
 
